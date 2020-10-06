@@ -1,9 +1,6 @@
-from binary import *
-from ram import *
+from utils import *
+from isa.isa import ISA
 
-
-M = 21
-IS = RAM(8+3, M)
 
 PC_in = 1
 PC_out = 1<<1
@@ -26,7 +23,7 @@ ALU_sub = 1<<17
 ALU_carry = 1<<18
 BRK = 1<<19
 HLT = 1<<20
-
+M = 21
 
 base = [
     PC_out | MA_in,
@@ -86,13 +83,13 @@ instructions = [
     ]
 ]
 
-N = len(instructions)
-for i in range(2**8):
-    instruction = base
-    if i < N:
-        instruction = base+instructions[i]
-        IS.bits[names[i]] = int2bin(i, 8)
-    L = len(instruction)-1
-    for j, sub_instruction in enumerate(instruction):
-        if j == L: sub_instruction |= BRK
-        IS.set(int2bin(j, 3)+int2bin(i, 8), int2bin(sub_instruction, M))
+ISATEST = ISA(8, 3, M)
+ISATEST.set_rom(base, names, instructions, BRK)
+def convert(self, i, instruction, ram):
+    if type(instruction) == str:
+        instruction = self.names[instruction]
+    if type(instruction) == int:
+        instruction = int2bin(instruction, ram.pins_out)
+    ram.set(int2bin(i, ram.pins_in), instruction)
+    return i+1
+ISATEST.convert = patch(convert, ISATEST)

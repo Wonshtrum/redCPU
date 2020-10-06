@@ -2,10 +2,10 @@ from cpu.cpu import *
 
 
 class CPU65(CPU):
-    def __init__(self, IS, pins):
-        super().__init__(IS, pins)
+    def __init__(self, ISA, pins):
+        super().__init__(ISA, pins)
 
-        #REGISTERS
+        #REGISATERS
         self.PC = [0]*pins #program pointer
         self.SP = [0]*pins #stack pointer
         self.MA = [0]*pins #memory address
@@ -20,7 +20,7 @@ class CPU65(CPU):
         if self.HLT: return False
         for i in range(8):
             print(self.IR)
-            sig = self.IS.get(int2bin(i, 3)+self.IR)
+            sig = self.ISA.get(int2bin(i, 3)+self.IR)
             PC_in, PC_out, PC_count, MA_in, RAM_in, RAM_out, IR_in, IR_out, DT_in, DT_out, A_in, A_out, X_in, X_out, Y_in, Y_out, ALU_out, ALU_sub, ALU_carry, BRK, HLT = sig
 
 
@@ -51,11 +51,3 @@ class CPU65(CPU):
             if HLT: self.HLT = True; return False
             if BRK: break
         return True
-
-    def load(self, prog):
-        for i, instruction in enumerate(prog):
-            if type(instruction) == str:
-                instruction = self.IS.bits[instruction]
-            if type(instruction) == int:
-                instruction = int2bin(instruction, self.pins)
-            self.ram.set(int2bin(i, self.pins), instruction)
