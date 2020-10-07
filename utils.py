@@ -1,6 +1,19 @@
 from types import MethodType as patch
 
 
+class Options:
+    @staticmethod
+    def valid(arg):
+        return len(arg) > 1 and arg[0] == "-" and all(_.isalnum() for _ in arg[1:])
+
+    def __init__(self, args = []):
+        flags = "".join(_[1:] for _ in args if self.valid(_))
+        print(flags)
+        self.verbose = "v" in flags
+        self.interactive = "i" in flags
+
+Default = Options()
+
 def int2bin(v, n):
     return list(1 if v & 1<<i else 0 for i in range(n))
 

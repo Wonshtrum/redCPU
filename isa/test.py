@@ -24,6 +24,7 @@ ALU_carry = 1<<18
 BRK = 1<<19
 HLT = 1<<20
 M = 21
+SIGS = ["PC_in", "PC_out", "PC_count", "MA_in", "RAM_in", "RAM_out", "IR_in", "IR_out", "DT_in", "DT_out", "A_in", "A_out", "X_in", "X_out", "Y_in", "Y_out", "ALU_out", "ALU_sub", "ALU_carry", "BRK", "HLT"]
 
 base = [
     PC_out | MA_in,
@@ -83,8 +84,8 @@ instructions = [
     ]
 ]
 
-ISATEST = ISA(8, 3, M)
-ISATEST.set_rom(base, names, instructions, BRK)
+ISATEST = ISA(8, 3, M, SIGS)
+ISATEST.set_rom(names, base, instructions, BRK)
 def convert(self, i, instruction, ram):
     if type(instruction) == str:
         instruction = self.names[instruction]

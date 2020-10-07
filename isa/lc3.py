@@ -24,6 +24,7 @@ ALU_carry = 1<<18
 BRK = 1<<19
 HLT = 1<<20
 M = 21
+SIGS = ["PC_in", "PC_out", "PC_count", "MA_in", "RAM_in", "RAM_out", "IR_in", "IR_out", "DT_in", "DT_out", "RE", "RFB", "R_in", "R_out", "A_in", "A_out", "ALU_out", "ALU_sub", "ALU_carry", "BRK", "HLT"]
 
 base = [
     PC_out | MA_in,
@@ -36,40 +37,43 @@ read = [
 
 OP_R = 1
 OP_C = 2
-OP_RC = 3
-names = ["nop", "ldi", "ldr", "mv" , "str", "sta", "sti", "jmp", "hlt"]#"add", "sub", "cmp", "hlt"]
-ops =   [0    , OP_RC, OP_RC, OP_RC, OP_RC, OP_RC, OP_RC, OP_C , 0]
+OP_RC = OP_R | OP_C
+names = ["nop", "ldi", "ldr", "lda", "mv" , "sti", "str", "sta", "jmp", "hlt"]#"add", "sub", "cmp", "hlt"]
+ops =   [0    , OP_RC, OP_RC, OP_RC, OP_RC, OP_RC, OP_RC, OP_RC, OP_C , 0]
 
 instructions = [
-    [
+    [                           #NOP
         0,
-    ], read+[
+    ], read+[                   #LDI
         DT_out | R_in,
-    ], read+[
+    ], read+[                   #LDR
+        RFB | R_out | MA_in,
+        RE | RAM_out | R_in,
+    ], read+[                   #LDA
         DT_out | MA_in,
         RAM_out | R_in,
-    ], [
-        R_out | A_in,
+    ], read+[                   #MV
+        RE | R_out | A_in,
         RFB | A_out | R_in,
-    ], read+[
+    ], read+[                   #STI
+        R_out | MA_in,
+        RAM_in | DT_out,
+    ], read+[                   #STR
         R_out | MA_in,
         RFB | RAM_in | R_out,
-    ], read+[
+    ], read+[                   #STA
         DT_out | MA_in,
         RAM_in | R_out,
-    ], read+[
-        R_out | MA_in,
-        DT_in | DT_out,
-    ], [
+    ], [                        #JMP
         PC_out | MA_in,
         RAM_out | PC_in,
-    ], [
+    ], [                        #HLT
         HLT,
     ]
 ]
 
-ISALC = ISA(4, 2, M)
-ISALC.set_rom([], names, instructions, BRK)
+ISALC = ISA(4, 2, M, SIGS)
+ISALC.set_rom(names, [], instructions, BRK)
 for i, instruction in enumerate(base):
     ISALC.names[f"op{i}"] = int2bin(instruction, M)
 
@@ -82,12 +86,11 @@ def convert(self, i, instruction, ram):
         op = instruction[j]
         op_n = ops[names.index(op)]
         op = self.names[op]
-        if op_n == 0:
-            op += [0]*4
-            pass
         if op_n & OP_R:
             j += 1
-            op += [0]+int2bin(instruction[j], 3)
+            op = op+[0]+int2bin(instruction[j], 3)
+        else:
+            op = op+[0]*4
         if op_n & OP_C:
             j += 1
             op1 = int2bin(instruction[j], ram.pins_out)
