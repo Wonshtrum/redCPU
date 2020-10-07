@@ -27,11 +27,9 @@ M = 21
 SIGS = ["PC_in", "PC_out", "PC_count", "MA_in", "RAM_in", "RAM_out", "IR_in", "IR_out", "DT_in", "DT_out", "RE", "RFB", "R_in", "R_out", "A_in", "A_out", "ALU_out", "ALU_sub", "ALU_carry", "BRK", "HLT"]
 
 base = [
-    PC_out | MA_in,
     RAM_out | IR_in | PC_count,
 ]
 read = [
-    PC_out | MA_in,
     RAM_out | DT_in | RE | PC_count,
 ]
 
@@ -42,37 +40,42 @@ names = ["nop", "ldi", "ldr", "lda", "mv" , "sti", "str", "sta", "jmp", "hlt"]#"
 ops =   [0    , OP_RC, OP_RC, OP_RC, OP_RC, OP_RC, OP_RC, OP_RC, OP_C , 0]
 
 instructions = [
-    [                           #NOP
-        0,
-    ], read+[                   #LDI
-        DT_out | R_in,
-    ], read+[                   #LDR
+    [                                   #NOP
+    	0,
+    ], [                                #LDI
+        RAM_out | RE | R_in | PC_count,
+    ], read+[                           #LDR
         RFB | R_out | MA_in,
         RE | RAM_out | R_in,
-    ], read+[                   #LDA
-        DT_out | MA_in,
-        RAM_out | R_in,
-    ], read+[                   #MV
+        PC_out | MA_in,
+    ], [                                #LDA
+        RAM_out | MA_in,
+        RAM_out | RE | R_in,
+        PC_out | MA_in
+    ], read+[                           #MV
         RE | R_out | A_in,
         RFB | A_out | R_in,
-    ], read+[                   #STI
+    ], read+[                           #STI
         R_out | MA_in,
         RAM_in | DT_out,
-    ], read+[                   #STR
+        PC_out | MA_in,
+    ], read+[                           #STR
         R_out | MA_in,
         RFB | RAM_in | R_out,
-    ], read+[                   #STA
-        DT_out | MA_in,
-        RAM_in | R_out,
-    ], read+[                   #JMP
-        DT_out | PC_in,
-    ], [                        #HLT
+        PC_out | MA_in,
+    ], [                                #STA
+        RAM_out | MA_in,
+        RAM_in | RE | R_out,
+        PC_out | MA_in,
+    ], [                                #JMP
+        RAM_out | PC_in | MA_in,
+    ], [                                #HLT
         HLT,
     ]
 ]
 
-ISALC = ISA(4, 2, M, SIGS)
-ISALC.set_rom(names, base, instructions, BRK)
+ISALLC = ISA(4, 2, M, SIGS)
+ISALLC.set_rom(names, base, instructions, BRK)
 
 def convert(self, i, instruction, ram):
     op1 = None
@@ -100,4 +103,4 @@ def convert(self, i, instruction, ram):
         ram.set(int2bin(i, ram.pins_in), op1)
         i += 1
     return i
-ISALC.convert = patch(convert, ISALC)
+ISALLC.convert = patch(convert, ISALLC)

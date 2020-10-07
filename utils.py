@@ -7,9 +7,10 @@ class Options:
         return len(arg) > 1 and arg[0] == "-" and all(_.isalnum() for _ in arg[1:])
 
     def __init__(self, args = []):
-        flags = "".join(_[1:] for _ in args if self.valid(_))
-        self.verbose = "v" in flags
-        self.interactive = "i" in flags
+        self.args = [_[1:] for _ in args if self.valid(_)]
+        self.flags = "".join(self.args)
+        self.verbose = "v" in self.flags
+        self.interactive = "i" in self.flags
 
 Default = Options()
 

@@ -2,6 +2,7 @@ from sys import argv
 from utils import Options
 from isa.test import ISATEST
 from isa.lc3 import ISALC
+from isa.llc import ISALLC
 from cpu.test import CPU65
 from cpu.lc3 import CPULC
 
@@ -18,16 +19,16 @@ def cpu_test(options):
 
 def cpu_lc3(options):
     prog = [
-        ("ldi", 0, 14),
+        ("ldi", 0, 16),
         ("sti", 0, 200),
-        ("lda", 1, 14),
+        ("lda", 1, 16),
         ("ldi", 2, 15),
         ("str", 0, 2),
         ("ldr", 3, 0),
         ("mv", 0, 1),
         "hlt",
     ]
-    prog = [
+    prog1 = [
         ("ldi", 0, 1),
         ("mv", 0, 1),
         ("ldi", 0, 2),
@@ -35,7 +36,9 @@ def cpu_lc3(options):
         ("jmp", 0),
         "hlt",
     ]
-    cpu = CPULC(ISALC, 8, options)
+    if "p1" in options.args:
+        prog = prog1
+    cpu = CPULC(ISALLC, 8, options)
     cpu.load(prog)
     cpu.run()
     return cpu, prog

@@ -15,9 +15,6 @@ class CPU:
     def op(self):
         raise Exception("not implemented")
 
-    def pre(self):
-        pass
-
     def exec(self):
         if self.HLT: return False
         self.pre()
@@ -40,18 +37,23 @@ class CPU:
 
         return True
 
-    def load(self, prog):
-        raise Exception("not implemented")
+    def pre(self):
+        if self.options.verbose:
+            print("----------------")
+        for sig in self.ISA.base:
+            self.op(sig)
+        if self.options.verbose:
+            print("----------------")
 
     def run(self):
         while self.exec():
             pass
     
-    def pick(self, b1, b2):
-        for i in range(b1, b2):
-            print(self.RAM.get(int2bin(i, self.pins)))
-
     def load(self, prog):
         i = 0
         for instruction in prog:
             i = self.ISA.convert(i, instruction, self.RAM)
+
+    def pick(self, b1, b2):
+        for i in range(b1, b2):
+            print(self.RAM.get(int2bin(i, self.pins)))
