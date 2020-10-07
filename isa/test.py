@@ -37,58 +37,58 @@ read = [
 
 names = ["nop", "lda", "ldx", "ldy", "lia", "lix", "liy", "tax", "txa", "tay", "tya", "sta", "stx", "sty", "jmp", "add", "adx", "ady", "hlt"]
 instructions = [
-    [
+    [                       #NOP
         0,
-    ], read+[
+    ], read+[               #LDA
         DT_out | MA_in,
         RAM_out | A_in,
-    ], read+[
+    ], read+[               #LDX
         DT_out | MA_in,
         RAM_out | X_in,
-    ], read+[
+    ], read+[               #LDY
         DT_out | MA_in,
         RAM_out | Y_in,
-    ], read+[
+    ], read+[               #LIA
         DT_out | A_in,
-    ], read+[
+    ], read+[               #LIX
         DT_out | X_in,
-    ], read+[
+    ], read+[               #LIY
         DT_out | Y_in,
-    ], [
+    ], [                    #TAX
         A_out | X_in,
-    ], [
+    ], [                    #TXA
         X_out | A_in,
-    ], [
+    ], [                    #TAY
         A_out | Y_in,
-    ], [
+    ], [                    #TYA
         Y_out | A_in,
-    ], read+[
+    ], read+[               #STA
         DT_out | MA_in,
         A_out | RAM_in,
-    ], read+[
+    ], read+[               #STX
         DT_out | MA_in,
         X_out | RAM_in,
-    ], read+[
+    ], read+[               #STY
         DT_out | MA_in,
         Y_out | RAM_in,
-    ], read+[
+    ], read+[               #JMP
         DT_out | PC_in,
-    ], read+[
+    ], read+[               #ADD
         DT_out | ALU_out | A_in,
-    ], [
+    ], [                    #ADX
         X_out | ALU_out | A_in,
-    ], [
+    ], [                    #ADY
         Y_out | ALU_out | A_in,
-    ], [
+    ], [                    #HLT
         HLT,
     ]
 ]
 
-ISATEST = ISA(8, 3, M, SIGS)
+ISATEST = ISA(5, 3, M, SIGS)
 ISATEST.set_rom(names, base, instructions, BRK)
 def convert(self, i, instruction, ram):
     if type(instruction) == str:
-        instruction = self.names[instruction]
+        instruction = self.names[instruction]+[0]*3
     if type(instruction) == int:
         instruction = int2bin(instruction, ram.pins_out)
     ram.set(int2bin(i, ram.pins_in), instruction)

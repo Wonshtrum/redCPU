@@ -8,7 +8,6 @@ class Options:
 
     def __init__(self, args = []):
         flags = "".join(_[1:] for _ in args if self.valid(_))
-        print(flags)
         self.verbose = "v" in flags
         self.interactive = "i" in flags
 

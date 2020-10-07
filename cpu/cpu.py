@@ -22,10 +22,10 @@ class CPU:
         if self.HLT: return False
         self.pre()
 
-        for i in range(4):
+        for i in range(2**self.ISA.max_ct):
             sig = self.ISA.get(int2bin(i, self.ISA.max_ct)+self.IR[:self.ISA.pins_in])
             if self.options.verbose:
-                print([code for i, code in zip(sig, self.ISA.sigs) if i])
+                print(self.IR[:self.ISA.pins_in], i, [code for i, code in zip(sig, self.ISA.sigs) if i])
 
             BRK, HLT = self.op(sig)
 
