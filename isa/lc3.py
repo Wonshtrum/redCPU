@@ -71,7 +71,7 @@ instructions = [
     ]
 ]
 
-ISALC = ISA(4, 2, M, SIGS)
+ISALC = ISA(4, 2, M, SIGS, name="lc3")
 ISALC.set_rom(names, base, instructions, BRK)
 
 def convert(self, i, instruction, ram):

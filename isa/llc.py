@@ -5,6 +5,7 @@ from isa.isa import ISA
 PC_in = 1
 PC_out = 1<<1
 PC_count = 1<<2
+PC_countA = PC_count
 MA_in = 1<<3
 RAM_in = 1<<4
 RAM_out = 1<<5
@@ -36,7 +37,7 @@ read = [
 OP_R = 1
 OP_C = 2
 OP_RC = OP_R | OP_C
-names = ["nop", "ldi", "ldr", "lda", "mv" , "sti", "str", "sta", "jmp", "hlt"]#"add", "sub", "cmp", "hlt"]
+names = ["nop", "ldi", "ldr", "lda", "mv" , "sti", "str", "sta", "jmp", "hlt"]#"add", "sub", "cmp"]
 ops =   [0    , OP_RC, OP_RC, OP_RC, OP_RC, OP_RC, OP_RC, OP_RC, OP_C , 0]
 
 instructions = [
@@ -49,9 +50,9 @@ instructions = [
         RE | RAM_out | R_in,
         PC_out | MA_in,
     ], [                                #LDA
-        RAM_out | MA_in,
+        RAM_out | MA_in | PC_countA,
         RAM_out | RE | R_in,
-        PC_out | MA_in
+        PC_out | MA_in,
     ], read+[                           #MV
         RE | R_out | A_in,
         RFB | A_out | R_in,
@@ -64,17 +65,17 @@ instructions = [
         RFB | RAM_in | R_out,
         PC_out | MA_in,
     ], [                                #STA
-        RAM_out | MA_in,
+        RAM_out | MA_in | PC_countA,
         RAM_in | RE | R_out,
         PC_out | MA_in,
     ], [                                #JMP
-        RAM_out | PC_in | MA_in,
+        RAM_out | PC_in | MA_in | PC_countA,
     ], [                                #HLT
         HLT,
     ]
 ]
 
-ISALLC = ISA(4, 2, M, SIGS)
+ISALLC = ISA(4, 2, M, SIGS, name="llc")
 ISALLC.set_rom(names, base, instructions, BRK)
 
 def convert(self, i, instruction, ram):

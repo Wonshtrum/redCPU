@@ -1,6 +1,5 @@
 from utils import *
 from ram import RAM
-import types
 
 
 class CPU:
@@ -10,6 +9,8 @@ class CPU:
         self.ISA = ISA
         self.RAM = RAM(pins, pins)
         self.bus = [0]*pins
+        self.PC = [0]*pins #program counter
+        self.IR = [0]*pins #instruction register
         self.options = options
     
     def op(self):
@@ -30,7 +31,10 @@ class CPU:
                 print("bus:", self.bus)
                 print("PC:", bin2int(self.PC))
             if self.options.interactive:
-                exec(input())
+                cmd = True
+                while cmd:
+                    cmd = input(">>> ")
+                    exec(cmd)
 
             if HLT: self.HLT = True; return False
             if BRK: break

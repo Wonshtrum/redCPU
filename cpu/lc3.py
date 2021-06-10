@@ -6,10 +6,8 @@ class CPULC(CPU):
         super().__init__(ISA, pins, options)
 
         #REGISTERS
-        self.PC = [0]*pins #program pointer
         self.SP = [0]*pins #stack pointer
         self.MA = [0]*pins #memory address
-        self.IR = [0]*pins #instruction register
         self.DT = [0]*pins #argument register
         self.TMP = [0]*pins #temporary register
 

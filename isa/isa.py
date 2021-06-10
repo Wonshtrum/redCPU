@@ -2,8 +2,9 @@ from utils import *
 from ram import RAM
 
 class ISA(RAM):
-    def __init__(self, pins_in, max_ct, pins_out, sigs):
+    def __init__(self, pins_in, max_ct, pins_out, sigs, name="ISA"):
         super().__init__(pins_in+max_ct, pins_out)
+        self.name = name
         self.pins_out = pins_out
         self.pins_in = pins_in
         self.max_ct = max_ct
@@ -15,7 +16,7 @@ class ISA(RAM):
 
     def set_rom(self, names, base, instructions, BRK = 0):
         costs = [len(_)+len(base) for _ in instructions]
-        print(costs, sum(costs), sum(costs)/len(costs))
+        print(self.name, costs, sum(costs), sum(costs)/len(costs))
 
         self.base = [int2bin(instruction, self.pins_out) for instruction in base]
         N = len(instructions)

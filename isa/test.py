@@ -84,7 +84,7 @@ instructions = [
     ]
 ]
 
-ISATEST = ISA(5, 2, M, SIGS)
+ISATEST = ISA(5, 2, M, SIGS, name="test")
 ISATEST.set_rom(names, base, instructions, BRK)
 def convert(self, i, instruction, ram):
     if type(instruction) == str:
