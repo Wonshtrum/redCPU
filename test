@@ -1,0 +1,8 @@
+LI A 16
+SI A 200
+LA B 16
+LI C 15
+SR A C
+LR D A
+MV A B
+HT

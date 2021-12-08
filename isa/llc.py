@@ -54,8 +54,8 @@ instructions = [
         RAM_out | RE | R_in,
         PC_out | MA_in,
     ], read+[                           #MV
-        RE | R_out | A_in,
-        RFB | A_out | R_in,
+        RFB | R_out | A_in,
+        RE | A_out | R_in,
     ], read+[                           #STI
         R_out | MA_in,
         RAM_in | DT_out,
